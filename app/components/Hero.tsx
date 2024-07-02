@@ -4,8 +4,9 @@ import { Cursor, useTypewriter } from "react-simple-typewriter";
 import BackgroundCircles from "./BackgroundCircles";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity";
 import { motion } from "framer-motion";
+import { PageInfo } from "@/utils/types";
+import { urlFor } from "@/sanity/lib/client";
 
 type Props = {
 	pageInfo: PageInfo;

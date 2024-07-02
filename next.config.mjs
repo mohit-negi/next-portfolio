@@ -1,15 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = 
-{
-    images:{
-        remotePatterns:[
-            {
-                protocol:"https",
-                hostname:"cdn.ssnity.io",
-                port:"",
-            }
-        ]
-    }
-};
+const nextConfig = {
+    reactStrictMode: true,
+    images: {
+      domains: ['cdn.sanity.io'],
+    },
+  }
 
 export default nextConfig;
