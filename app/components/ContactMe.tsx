@@ -2,91 +2,98 @@
 
 import { EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/solid";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 
 type FormData = {
-	name: string;
-	email: string;
-	subject: string;
-	message: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
 };
-
+const contactInfo = {
+	phone: "+91 6283461635",
+	email: "negi.astute@gmail.com",
+	address: "Chandigarh,India",
+}
 const ContactMe = () => {
-	const { register, handleSubmit } = useForm<FormData>();
-	const onSubmit = handleSubmit((formData) => {
-		window.location.href = `mailto:${formData.email}?subject=${formData.subject}&body=Hi, my name is ${formData.name}. ${formData.message}`;
-	});
+  const { register, handleSubmit } = useForm<FormData>();
+  const onSubmit = handleSubmit((formData) => {
+    window.location.href = `mailto:${formData.email}?subject=${formData.subject}&body=Hi, my name is ${formData.name}. ${formData.message}`;
+  });
 
-	return (
-		<div className="h-screen relative flex flex-col text-center md:text-left md:flex-row max-w-7xl px-10 justify-evenly mx-auto items-center">
-			<h3 className="absolute top-24 uppercase tracking-[20px] text-gray-500 text-2xl">
-				Contact
-			</h3>
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+      className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white py-20 px-4 sm:px-6 lg:px-8"
+    >
+      <h2 className="text-4xl font-bold mb-8 tracking-wider">Get in Touch</h2>
+      
+      <div className="w-full max-w-3xl flex flex-col md:flex-row gap-12">
+        <motion.div 
+          initial={{ x: -200, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="flex-1 space-y-6"
+        >
+          <h3 className="text-2xl font-semibold mb-4">Contact Information</h3>
+          <div className="space-y-4">
+            <a href="tel:+918850767392" className="flex items-center space-x-3 group">
+              <PhoneIcon className="h-6 w-6 text-indigo-400 group-hover:text-indigo-300 transition-colors duration-300" />
+              <span className="group-hover:text-indigo-300 transition-colors duration-300">{contactInfo.phone}</span>
+            </a>
+            <a href="mailto:prathamesh.chavan216@gmail.com" className="flex items-center space-x-3 group">
+              <EnvelopeIcon className="h-6 w-6 text-indigo-400 group-hover:text-indigo-300 transition-colors duration-300" />
+              <span className="group-hover:text-indigo-300 transition-colors duration-300">{contactInfo.email}</span>
+            </a>
+            <div className="flex items-center space-x-3">
+              <MapPinIcon className="h-6 w-6 text-indigo-400" />
+              <span>{contactInfo.address}</span>
+            </div>
+          </div>
+        </motion.div>
 
-			<div className="mt-20 flex flex-col space-y-8">
-				<h4 className="text-lg font-semibold text-center">
-					I have got what you need.{" "}
-					<span className="decoration-[#F7AB0A]/50 underline">Lets Talk.</span>
-				</h4>
-
-				<div className="space-y-2">
-					<div className="flex items-center space-x-5 justify-center">
-						<a href="tel:+918850767392">
-							<PhoneIcon className="h-5 w-5 animate-pulse text-[#F7AB0A]" />
-						</a>
-						<p className="text-base">+91 8850767392</p>
-					</div>
-
-					<div className="flex items-center space-x-5 justify-center">
-						<a href="mailto:prathamesh.chavan216@gmail.com">
-							<EnvelopeIcon className="h-5 w-5 animate-pulse text-[#F7AB0A]" />
-						</a>
-						<p className="text-base">prathamesh.chavan216@gmail.com</p>
-					</div>
-
-					<div className="flex items-center space-x-5 justify-center">
-						<MapPinIcon className="h-5 w-5 animate-pulse text-[#F7AB0A]" />
-						<p className="text-base">Mumbai, India</p>
-					</div>
-				</div>
-
-				<form onSubmit={onSubmit} className="flex flex-col space-y-2 mx-auto">
-					<div className="flex space-x-2">
-						<input
-							{...register("name")}
-							placeholder="Name"
-							className="contactInput"
-							type="text"
-						/>
-						<input
-							{...register("email")}
-							placeholder="Email"
-							className="contactInput"
-							type="email"
-						/>
-					</div>
-
-					<input
-						{...register("subject")}
-						placeholder="Subject"
-						className="contactInput"
-						type="text"
-					/>
-
-					<textarea
-						{...register("message")}
-						placeholder="Message"
-						className="contactInput"
-					/>
-					<button
-						type="submit"
-						className="bg-[#F7AB0A] py-5 px-10 rounded-md text-black font-bold text-lg"
-					>
-						Submit
-					</button>
-				</form>
-			</div>
-		</div>
-	);
+        <motion.form 
+          initial={{ x: 200, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+          onSubmit={onSubmit} 
+          className="flex-1 space-y-4"
+        >
+          <input
+            {...register("name")}
+            placeholder="Name"
+            className="w-full px-4 py-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            type="text"
+          />
+          <input
+            {...register("email")}
+            placeholder="Email"
+            className="w-full px-4 py-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            type="email"
+          />
+          <input
+            {...register("subject")}
+            placeholder="Subject"
+            className="w-full px-4 py-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            type="text"
+          />
+          <textarea
+            {...register("message")}
+            placeholder="Message"
+            className="w-full px-4 py-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 h-32 resize-none"
+          />
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
+          >
+            Send Message
+          </button>
+        </motion.form>
+      </div>
+    </motion.div>
+  );
 };
 
 export default ContactMe;

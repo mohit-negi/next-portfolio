@@ -19,55 +19,46 @@ import Projects from './components/Projects';
 import ContactMe from './components/ContactMe';
 import Footer from './components/Footer';
 import Link from 'next/link';
+import Layout from './components/Layout';
+import { Experience, PageInfo, Project, Skill, Social } from '@/utils/types';
 
 // const Skills = dynamic(() => import("@/components/Skills"), { ssr: false });
 // const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
-
 export const revalidate = 60; // Revalidate this page every 60 seconds
 
+interface HomeProps {
+  pageInfo: PageInfo;
+  projects: Project[];
+  skills: Skill[];
+  experiences: Experience[];
+  socials: Social[];
+}
+
 export default async function Home() {
+  const allData: HomeProps = await fetchAllData();
 
-console.log("-------------------------------------------------------------------------------------------------------")
-const allData = await fetchAllData();
-console.log("----------------------------")
-console.log(allData)
   return (
-    <main className="snap-y snap-mandatory h-screen overflow-y-scroll overflow-x-hidden z-0 scrollbar-thin sm:scrollbar scrollbar-track-gray-400/20 scrollbar-thumb-[#F7AB0A]/80">
-    <Header socials={allData.socials} />
-    <section id="hero" className="snap-start">
-        <Hero pageInfo={allData.pageInfo} />
-      </section>
-      <section id="about" className="snap-center">
-        <About pageInfo={allData.pageInfo} />
-      </section>
-      <section id="experience" className="snap-start">
-        <WorkExperience experiences={allData.experiences} />
-      </section>
-      <section id="skills" className="snap-start">
-        <Skills skills={allData.skills} />
-      </section>
-      <section id="projects" className="snap-start">
-        <Projects projects={allData.projects} />
-      </section>
-      
-      <section id="contact" className="snap-start">
-        <ContactMe />
-      </section>
-      <Link href="#hero">
-        <Footer heroImage={allData.pageInfo.heroImage} />
-      </Link> 
-        {/*
-
-      
-
-      
-      <section id="contact" className="snap-start">
-        <ContactMe />
-      </section>
-
-      <Link href="#hero">
-        <Footer heroImage={pageInfo.heroImage} />
-      </Link> */}
-    </main>
+    <Layout socials={allData.socials} heroImage={allData.pageInfo.heroImage}>
+      <main className="grid gap-20 overflow-hidden">
+        <section id="hero">
+          <Hero pageInfo={allData.pageInfo} />
+        </section>
+        <section id="about">
+          <About pageInfo={allData.pageInfo} />
+        </section>
+        <section id="experience">
+          <WorkExperience experiences={allData.experiences} />
+        </section>
+        <section id="skills">
+          <Skills skills={allData.skills} />
+        </section>
+        <section id="projects">
+          <Projects projects={allData.projects} />
+        </section>
+        <section id="contact">
+          <ContactMe />
+        </section>
+      </main>
+    </Layout>
   );
 }

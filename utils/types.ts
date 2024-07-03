@@ -1,6 +1,6 @@
 // types.ts
 
-import { Image, Slug } from 'sanity';
+// import { Image, Slug } from 'sanity';
 
 export interface Experience {
   _id: string;
@@ -20,7 +20,7 @@ export interface PageInfo {
   _type: "pageInfo";
   name: string;
   role: string;
-  heroImage: Image;
+  heroImage: SanityImage;
   backgroundInformation: string;
   profilePic: Image;
   phoneNumber: string;
@@ -66,4 +66,12 @@ export interface Image {
 export interface Slug {
   _type: "slug";
   current: string;
+}
+
+export interface SanityImage {
+  _type: 'image';
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
 }
