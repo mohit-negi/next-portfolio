@@ -1,15 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { urlFor } from '@/sanity/lib/client';
-import {
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-} from 'framer-motion';
-import './Projects.css';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { LinkIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
 import Link from 'next/link';
 import { Project } from '@/utils/types';
 
@@ -18,87 +12,109 @@ type Props = {
 };
 
 const Projects = ({ projects }: Props) => {
-  const motionValue = useMotionValue(0);
-  const [animationComplete, setAnimationComplete] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useMotionValueEvent(motionValue, 'animationStart', () => {
-    setAnimationComplete(false);
-  });
+  // useEffect(() => {
+  //   if (projects.length > 0) {
+  //     setIsLoading(false);
+  //   }
+  // }, [projects]);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
+    }, 5000);
+  
+    return () => clearInterval(interval);
+  }, [projects.length]);
 
-  useMotionValueEvent(motionValue, 'animationComplete', () => {
-    setAnimationComplete(true);
-  });
+  const handleManualNavigation = (direction: 'left' | 'right') => {
+    setCurrentIndex((prevIndex) => {
+      if (direction === 'left') {
+        return (prevIndex - 1 + projects.length) % projects.length;
+      } else {
+        return (prevIndex + 1) % projects.length;
+      }
+    });
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 1.5 }}
-      className="h-screen relative flex overflow-hidden text-left max-w-full justify-evenly items-center z-0"
+      className="min-h-screen relative flex flex-col justify-center items-center px-4 py-16 md:py-24 overflow-hidden"
     >
-      <h3 className="absolute top-24 uppercase tracking-[20px] text-gray-500 text-2xl">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 opacity-20 transform scale-[0.80] rounded-full blur-3xl" />
+
+      <h3 className="mb-8 md:mb-12 uppercase tracking-[10px] md:tracking-[20px] text-gray-500 text-lg md:text-2xl">
         projects
       </h3>
 
-      <div className="relative w-full flex overflow-x-scroll overflow-y-hidden snap-x snap-mandatory z-20 scrollbar scrollbar-track-gray-400/20 scrollbar-thumb-[#F7AB0A]/80">
-        {projects.map((project, i) => (
-          <div
-            key={project._id}
-            className="w-screen flex-shrink-0 snap-center flex flex-col space-y-5 items-center justify-center pt-10 lg:pt-20 px-10 h-screen"
+      <div className="relative w-full max-w-4xl">
+        <button 
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 z-30 text-white text-4xl bg-black bg-opacity-30 rounded-full p-2"
+          onClick={() => handleManualNavigation('left')}
+        >
+          &#8249;
+        </button>
+
+        <button 
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 z-30 text-white text-4xl bg-black bg-opacity-30 rounded-full p-2"
+          onClick={() => handleManualNavigation('right')}
+        >
+          &#8250;
+        </button>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, x: 300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -300 }}
+            transition={{ duration: 0.3 }} 
+            className="flex flex-col items-center space-y-4 md:space-y-6"
           >
-            <div className="relative">
-              <motion.img
-                style={{ y: motionValue }}
-                initial={{ y: -200, opacity: 0 }}
-                transition={{ duration: 1.2 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                src={urlFor(project.image).url()}
-                alt={project.title}
-                className="object-cover w-[360px] h-[200px] lg:w-[450px] lg:h-[250px]"
-              />
-              {animationComplete && project.linkToBuild && (
-                <Link
-                  href={project.linkToBuild}
-                  target="_blank"
-                  className="absolute flex items-center justify-center top-0 opacity-0 hover:opacity-100 bg-black/70 transition-opacity duration-150 ease-in w-full h-full z-2 cursor-pointer"
-                >
-                  <LinkIcon className="w-10 h-10" />
-                </Link>
-              )}
+            <h4 className="text-xl md:text-2xl lg:text-3xl font-semibold text-center text-white">
+              <span className="text-sm md:text-base lg:text-lg font-normal block mb-2">
+                Project {currentIndex + 1} of {projects.length}
+              </span>
+              {projects[currentIndex].title}
+            </h4>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+              {projects[currentIndex].technologies &&
+                projects[currentIndex].technologies.map((technology) => (
+                  <Image
+                    className="w-6 h-6 md:w-8 md:h-8 object-contain"
+                    key={technology._id}
+                    width={32}
+                    height={32}
+                    src={urlFor(technology.image).url()}
+                    alt={technology.title}
+                  />
+                ))}
             </div>
 
-            <div className="flex flex-col items-center space-y-5 px-0 md:px-10 max-w-6xl">
-              <h4 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center">
-                <span className="underline decoration-[#F7AB0A]/50">
-                  Case Study {i + 1} of {projects.length}:
-                </span>{' '}
-                {project.title}
-              </h4>
-
-              <div className="flex items-center space-x-2 justify-center">
-                {project.technologies &&
-                  project.technologies.map((technology) => (
-                    <Image
-                      className="h-10 w-10 object-contain"
-                      key={technology._id}
-                      width={500}
-                      height={500}
-                      src={urlFor(technology.image).url()}
-                      alt={technology.title}
-                    />
-                  ))}
-              </div>
-
-              <p className="summary overflow-hidden text-justify text-sm md:text-base lg:text-lg md:text-left max-w-4xl">
-                {project.summary}
+            <div className="max-h-48 md:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 pr-2">
+              <p className="text-sm md:text-base text-center max-w-2xl text-white">
+                {projects[currentIndex].summary}
               </p>
             </div>
-          </div>
-        ))}
-      </div>
 
-      <div className="w-full absolute top-[30%] bg-[#F7AB0A]/10 left-0 h-[500px] -skew-y-12" />
+            {projects[currentIndex].linkToBuild && (
+              <Link
+                href={projects[currentIndex].linkToBuild}
+                target="_blank"
+                className="text-[#F7AB0A] underline text-base md:text-lg hover:text-[#F7AB0A]/80 transition-colors duration-200 mt-2"
+              >
+                View Project
+              </Link>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 };

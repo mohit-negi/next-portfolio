@@ -25,7 +25,6 @@ import { Experience, PageInfo, Project, Skill, Social } from '@/utils/types';
 // const Skills = dynamic(() => import("@/components/Skills"), { ssr: false });
 // const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 export const revalidate = 60; // Revalidate this page every 60 seconds
-
 interface HomeProps {
   pageInfo: PageInfo;
   projects: Project[];
@@ -40,22 +39,22 @@ export default async function Home() {
   return (
     <Layout socials={allData.socials} heroImage={allData.pageInfo.heroImage}>
       <main className="grid gap-20 overflow-hidden">
-        <section id="hero">
+        <section id="hero" className="relative z-10">
           <Hero pageInfo={allData.pageInfo} />
         </section>
-        <section id="about">
+        <section id="about" className="relative z-20 mt-[-50vh] pt-[50vh]">
           <About pageInfo={allData.pageInfo} />
         </section>
-        <section id="experience">
+        <section id="experience" className="relative z-10">
           <WorkExperience experiences={allData.experiences} />
         </section>
-        <section id="skills">
+        <section id="skills" className="relative z-10">
           <Skills skills={allData.skills} />
         </section>
-        <section id="projects">
+        <section id="projects" className="relative z-10">
           <Projects projects={allData.projects} />
         </section>
-        <section id="contact">
+        <section id="contact" className="relative z-10">
           <ContactMe />
         </section>
       </main>

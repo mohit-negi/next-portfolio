@@ -9,7 +9,7 @@ export const Meteors = ({
   number?: number;
   className?: string;
 }) => {
-  const meteors = new Array(number || 200000).fill(true);
+  const meteors = new Array(number || 999999).fill(true);
   return (
     <>
       {meteors.map((el, idx) => (

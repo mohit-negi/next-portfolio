@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { PageInfo } from "@/utils/types";
 import { urlFor } from "@/sanity/lib/client";
 import { Meteors } from "./Meteors";
+import { useMemo } from "react";
 
 type Props = {
   pageInfo: PageInfo;
@@ -23,23 +24,28 @@ const Hero = ({ pageInfo }: Props) => {
     delaySpeed: 20000,
   });
 
+  // Memoize the Meteors component
+  const MemoizedMeteors = useMemo(() => <Meteors number={20} />, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      transition={{ duration: 1.2 }}
-      whileInView={{ opacity: 1 }}
-      className="relative h-screen flex flex-col space-y-8 items-center justify-center text-center overflow-hidden bg-gray-900"
-    >
+    <div className="relative h-screen flex flex-col space-y-8 items-center justify-center text-center overflow-hidden bg-gray-900">
       <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 opacity-20 transform scale-[0.80] rounded-full blur-3xl" />
-      <div className="relative z-10">
-        <Image
+      {MemoizedMeteors}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+        className="relative z-10 flex flex-col items-center"
+      >
+        {pageInfo?.heroImage && <Image
           className="rounded-full h-32 w-32 mx-auto object-cover"
           height={400}
           width={400}
           src={urlFor(pageInfo.heroImage).url()}
           alt="hero image"
         />
-
+}
+        
         <div className="z-20 flex flex-col items-center mt-4">
           <h2 className="text-sm md:text-base lg:text-lg uppercase text-gray-500 pb-5 tracking-[8px] md:tracking-[12px] lg:tracking-[15px]">
             {pageInfo.role}
@@ -59,9 +65,8 @@ const Hero = ({ pageInfo }: Props) => {
             />
           </h1>
         </div>
-      </div>
-      <Meteors number={20} />
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
